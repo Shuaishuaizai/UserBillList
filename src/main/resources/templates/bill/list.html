@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>userList</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}"></link>
+    <script type="text/javascript" th:src="@{/js/My97DatePicker/WdatePicker.js}"></script>
+    <script type="text/javascript" src="/js/My97DatePicker/lang/zh-cn.js"></script>
+    <script type="text/javascript" th:src="@{/js/jquery/jquery-1.10.2.min.js}"></script>
+</head>
+<body class="container">
+<br/>
+<h1>账单列表</h1>
+<br/><br/>
+
+<div class="with:80%">
+    <form class="form-inline" action="/bill/list" id="qf" method="post">
+
+        <div class="form-group">
+            <label for="typeId" class="control-label">类型</label>
+            <select name="typeId" id="typeId" class="form-control">
+                <option value="-1">全部</option>
+                <option th:each="t:${types}" th:value="${t.id}" th:text="${t.name}"
+                        th:selected="${t.id}+''==${#strings.trim(param.typeId)}"></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="date1" class="control-label">开始时间</label>
+            <input type="text" class="form-control" name="date1" id="date1" th:value="${param.date1}" placeholder="开始时间"
+                   onclick="WdatePicker()"/>
+        </div>
+        <div class="form-group">
+            <label for="date2" class="control-label">结束时间</label>
+            <input type="text" class="form-control" name="date2" id="date2" th:value="${param.date2}" placeholder="结束时间"
+                   onclick="WdatePicker()"/>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="查询" class="btn btn-info"/>
+            &nbsp; &nbsp;
+            <input type="reset" value="重置" class="btn btn-info"/>
+            &nbsp; &nbsp;
+            <a href="/bill/toAdd" th:href="@{/bill/toAdd}" class="btn btn-info">添加</a>
+        </div>
+    </form>
+</div>
+<br/>
+
+
+<div class="with:80%">
+    <table class="table table-striped table-bordered">
+        <thead>
+        <tr>
+            <th>编号</th>
+            <th>标题</th>
+            <th>时间</th>
+            <th>金额</th>
+            <th>类别</th>
+            <th>说明</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+         <tr th:each="b,status : ${list}" th:object="${b} " th:style="${status.odd} ? 'background-color: #A3C6C8'  ">
+            <td  scope="row" th:text="${b.id}">1</td>
+            <td th:text="*{title}">1</td>
+            <td th:text="*{#dates.format(billTime,'yyyy-MM-dd')}">1</td>
+            <td th:text="*{typeId}">1</td>
+            <td th:text="*{price}">1</td>
+            <td th:text="*{explain}">1</td>
+            <td>
+                <a th:href="|/bill/delete/*{id}|">删除</a>
+                <a th:href="|/bill/toUpdate/*{id}|">修改</a>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
